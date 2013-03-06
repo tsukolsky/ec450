@@ -1,0 +1,25 @@
+Todd Sukolsky, U50387016
+2/20/13, Homework 3 Writeup
+
+Initialization:
+For this program the initializations are the same as for the module in homework 1 except for the 
+watchdog timer. The clock used was the 1MHz clock and a clock divide of 512 yielding an interrupt roughly
+every .512ms.
+
+Watchdog Overflow Interrupt:
+By using static ints in the watchdog we eliminate extra overhead in global declaraitions.
+The module uses a Moore state machine (output is dependent only on the current state)
+to determine what to do: Blink the green led twice, the red once and then start timing. 
+The initial state is to turn on the green led. This is the starting condidition for the countdown.
+From here the state changes to 1 and the green LED is blinked twice. After the last toggle off
+the state changes to 2 and the red led is turned on while the green led is killed.
+In state 2 the red led blinks once and once that led is toggled off the timer is started for how long
+it takes the user to press the button. THe button is sampled ever .512ms (1MHz/512), see watchdog line,
+and if on .512ms interval the button was pressed, so the state of the current button is ground and the last
+state was high, then the timer should be incremented one last time and then the state goes to 4 which is 
+where a 2 second wait occurs, roughly. AFter this the state is returned to 0 and the cycle goes again.
+
+Extra Notes:
+To view the global variable, reactionTime (float), the user must pause the debugger either in the wait period 
+or when the green lights are blinking. Otherwise the timer will be reset. See "Notes" section in 
+header for more details about button pressing bugs.
