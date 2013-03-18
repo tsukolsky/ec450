@@ -37,6 +37,10 @@
 #define A_tone 440/2
 #define B_tone 494/2
 
+//Define Oscillator frequency
+#define FOSC 1000000
+
+
 /*==============================================*/
 /*				Global Variables				*/
 /*==============================================*/
@@ -74,7 +78,7 @@ void initTimerA(){
 	TA0CTL |= TACLR; 	//reset clock
 	TA0CTL = TASSEL1+ID_0+MC_2;		//clock source is SMCLK, clk divider =1, continuous mode
 	TA0CCTL0 = CCIE;				//turn on output compare interrupt
-	TA0CCR0 = C_tone-1;				//when output is triggered.
+	TA0CCR0 = FOSC*(1/(2*C_tone))-1;				//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
 	
 	//Connect Timer output to pin TA0
 	P1SEL |= TA0_BIT;
