@@ -5,7 +5,19 @@
 'Building file: ../main.c'
 'Invoking: MSP430 Compiler'
 "C:/ti/ccsv5/tools/compiler/msp430_4.1.2/bin/cl430" -vmsp --abi=eabi -Ooff -g --include_path="C:/ti/ccsv5/ccs_base/msp430/include" --include_path="C:/ti/ccsv5/tools/compiler/msp430_4.1.2/include" --advice:power=all --define=__MSP430G2553__ --diag_warning=225 --display_error_number --diag_wrap=off --printf_support=minimal --preproc_with_compile --preproc_dependency="main.pp"  "../main.c"
-"../main.c", line 90: warning #83-D: storage class is not first
+"../main.c", line 124 (col. 13): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 133 (col. 19): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 137 (col. 15): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 143 (col. 21): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 149 (col. 18): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 152 (col. 21): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 157 (col. 18): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 160 (col. 21): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 165 (col. 18): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 168 (col. 21): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 179 (col. 18): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 195 (col. 14): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
+"../main.c", line 242 (col. 30): remark #1531-D: (ULP 5.2) Detected floating point operation(s). Recommend moving them to RAM during run time or not using as these are processing/power intensive
 'Finished building: ../main.c'
 ' '
 'Building target: homework4_tones.out'
@@ -13,13 +25,12 @@
 "C:/ti/ccsv5/tools/compiler/msp430_4.1.2/bin/cl430" -vmsp --abi=eabi -Ooff -g --advice:power=all --define=__MSP430G2553__ --diag_warning=225 --display_error_number --diag_wrap=off --printf_support=minimal -z --stack_size=80 -m"homework4_tones.map" --heap_size=80 -i"C:/ti/ccsv5/ccs_base/msp430/include" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.2/lib" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.2/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --rom_model -o "homework4_tones.out"  "./main.obj" -l"libc.a" "../lnk_msp430g2553.cmd" 
 <Linking>
 remark #10372-D: (ULP 4.1) Detected uninitialized Port 2 in this project. Recommend initializing all unused ports to eliminate wasted current consumption on unused pins.
-"../lnk_msp430g2553.cmd", line 80: warning #10374-D: Interrupt vector "PORT2" does not have an interrupt handler routine.
 remark #10372-D: (ULP 4.1) Detected uninitialized Port 3 in this project. Recommend initializing all unused ports to eliminate wasted current consumption on unused pins.
+"../lnk_msp430g2553.cmd", line 80: warning #10374-D: Interrupt vector "PORT2" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 82: warning #10374-D: Interrupt vector "ADC10" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 83: warning #10374-D: Interrupt vector "USCIAB0TX" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 84: warning #10374-D: Interrupt vector "USCIAB0RX" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 85: warning #10374-D: Interrupt vector "TIMER0_A1" does not have an interrupt handler routine.
-"../lnk_msp430g2553.cmd", line 87: warning #10374-D: Interrupt vector "WDT" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 88: warning #10374-D: Interrupt vector "COMPARATORA" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 89: warning #10374-D: Interrupt vector "TIMER1_A1" does not have an interrupt handler routine.
 "../lnk_msp430g2553.cmd", line 90: warning #10374-D: Interrupt vector "TIMER1_A0" does not have an interrupt handler routine.

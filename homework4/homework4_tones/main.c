@@ -40,34 +40,58 @@
 //Define Oscillator frequency
 #define FOSC 1000000
 
+//Define wait times
+#define STATE_1_TIME	1.0
+#define STATE_2_TIME	1.0
+#define STATE_3_TIME	1.0
+#define STATE_4_TIME	.75
+#define STATE_5_TIME	.50
+#define PAUSE_TIME		.5
+
+//Define bools
+#define fTrue	 1
+#define fFalse	 0
+
+//Define MACROS
+#define __resetTimeWaited() timeWaited=0;
 
 /*==============================================*/
 /*				Global Variables				*/
 /*==============================================*/
-volatile unsigned int halfPeriod=500;	//1kHz tone.
-volatile unsigned int playingSound=0;	//Whether we are playing a sound at the moment
+volatile unsigned int flagPlaySong=fFalse;
+volatile float timeWaited=0;
 
 /*==============================================*/
 /*			Forward Function Declarations		*/
 /*==============================================*/
 void initTimerA();
 void initButtonAndLEDS();
+void playSong();
 
 /*==============================================*/
 /*				   Main Program					*/
 /*==============================================*/
 
 void main(void){
-	WDTCTL = WDTPW + WDTHOLD;	//shut down watchdog timer
+	//Set watchdog and enable it's interrupt
+	WDTCTL = (WDTPW + WDTTMSEL + WDTCNTCL + 1);	//Boots off 1MHz clock, div 9192 gives interrupt every ~8.2 ms
+    IE1 |= WDTIE;
+
+    //Set timing
 	BCSCTL1 = CALBC1_1MHZ;		//1MHz calibration for clock
 	DCOCTL = CALDCO_1MHZ;		//"
 
-	//Initialize timers and buttons
+	//Initialize timers, buttons, LEDs
 	initButtonAndLEDS();
 	initTimerA();
 
 	//Enable global interrupts
-	_bis_SR_register(GIE+LPM0_bits);
+	_bis_SR_register(GIE);
+
+	//Processing Loop
+	while(fTrue){
+		if (flagPlaySong){playSong();flagPlaySong=fFalse;}	//Play song then reset flag.
+	}
 }
 
 
@@ -78,8 +102,8 @@ void main(void){
 void initTimerA(){
 	TA0CTL |= TACLR; 	//reset clock
 	TA0CTL = TASSEL1+ID_0+MC_1;					//clock source is SMCLK, clk divider =1, up mode
-	TA0CCTL0 = CCIE + playingSound;			//turn on output compare interrupt, initially OUTMOD
-	TA0CCR0 = FOSC/C_tone-1;						//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
+	TA0CCTL0 = CCIE;							//turn on output compare interrupt, initially OUTMOD
+	TA0CCR0 = FOSC/C_tone-1;					//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
 	
 	//Connect Timer output to pin TA0
 	P1SEL |= TA0_BIT;
@@ -89,48 +113,93 @@ void initTimerA(){
 /*------------------------------------------*/
 
 void playSong(){
-	volatile static unsigned int state=0;
-	static unsigned int whichRun=0;
+	volatile unsigned int state=0, lastTone=0, whichRun=0, repeatedToneReps=0;
+	volatile unsigned int playingSong=fTrue;
+
+	while (playingSong){
 	//State machine
 	switch (state){
-	case 0: {
-		TA0CCR0=FOSC/G_tone-1;
+	//Initialization state
+	case 0:{
+		TACCTL0 = CCIE + OUTMOD_4;		//turn sound on, move to state 1
+		timeWaited=0;
+		state=1;
 		break;
 	}
+	//Triple tone to play, beginning
 	case 1: {
-		TACCR0=FOSC/G_tone-1;
+		//If we haven't played the beginning tone three times, play the tone for the correct amount of time
+		if (repeatedToneReps < 3){
+			//Haven't played three times, if timeWaited < time to play then keep playing the tone, stay in same state.
+			if (timeWaited < STATE_1_TIME){
+				TA0CCR0=FOSC/G_tone-1;
+				state=1;
+			} else {
+				timeWaited=0; 				//reset time waited
+				lastTone=state; 			//set where we were to this state
+				state=6;					//go to pause state
+				repeatedToneReps++;			//incrmement how many times we have played that beginning tone
+			}
+		//We played the tone enough times, Set the reps to 0, timeWaited reset, then go to pause state.
+		} else {timeWaited=0; lastTone=state; state=6;repeatedToneReps=0;}
 		break;
 	}
+	//G-G-G-"C"-F-D-"C"-F-D
 	case 2: {
-		TACCR0=FOSC/G_tone-1;
+		//Playing the middle C, if the timeWaited so far is less than tone time, play the tone
+		if (timeWaited < STATE_2_TIME){
+			TACCR0=FOSC/C_tone-1;
+		//We played the tone, go to pause state while resetting timeWaited.
+		} else {timeWaited=0; lastTone=state; state=6;}		//Go to pause
 		break;
 	}
-	case 3: {
-		TACCR0=FOSC/C_tone-1;
-		state=4;
+	case 3:{
+		//Playing the 5th note or 8th. If timeWaited is less than tone time, keep playhing the tone
+		if (timeWaited < STATE_3_TIME){
+			TACCR0=FOSC/F_tone-1;
+		//Done playing tone? Reset time waited and go to puase state.
+		} else {timeWaited=0;lastTone=state; state=6;}
 		break;
 	}
 	case 4:{
-		TACCR0=FOSC/F_tone-1;
-		state=5;
+		//Playing the 6th note or 9th. If timeWaited is less than tone time, keep playhing the tone
+		if (timeWaited < STATE_4_TIME){
+			TACCR0=FOSC/D_tone-1;
+		//Done playing tone? Reset time waited and go to pause state
+		} else {timeWaited=0;lastTone=state; state=6;}
 		break;
 	}
 	case 5:{
-
-		TACCR0=FOSC/D_tone-1;
-		if (whichRun==0){whichRun++; state=3;}
-		else {state=6;}
+		//Get out of this sucker.
+		TACCTL0=CCIE;	//no more sound.
+		playingSong=fFalse;		//break out of the while loop, done playing the song.
 		break;
 	}
 	case 6:{
-		//Get out of this sucker.
-		state=0;
-		whichRun=0;
-		break;
+		//IF timeWaited is less than pause time, keep pausing without sound
+		if (timeWaited < PAUSE_TIME){
+			//Don't output sound.
+			TACCTL0 = CCIE;
+		//Going back into playing tones
+		} else {
+			//We are going to go back to a tone, figure out whcih one then reset timeWaited
+			if (lastTone < 5){	//not state 1 where we need to repeat the tone three times
+				if (repeatedToneReps==0 && whichRun>0){
+					state=lastTone+1;									//should move to state 2
+				}else if(repeatedToneReps==0 && whichRun==0){
+					state=2;
+					whichRun++;											//repeat the C-F-D phrase
+				}else if (repeatedToneReps !=0){state=lastTone;}		//repeat the first tone three times
+				else;
+				TACCTL0 = CCIE+OUTMOD_4;	//turn sound back on
+			}else {state=0;}
+			timeWaited=0;
+		}//end else timeWaited < PAUSE_TIME
 	}
 	default:{state=0; whichRun=0;break;}
 	}//end switch
-}
+	}//end while
+}//end function Play song
 /*------------------------------------------*/
 
 void initButtonAndLEDS(){
@@ -152,11 +221,10 @@ void initButtonAndLEDS(){
 /*==========================================*/
 
 void interrupt buttonISR(){
-
 	if (P1IFG&BUTTON_BIT){
 		P1IFG &= ~BUTTON_BIT;	//lower flag
-		playingSound ^= OUTMOD_4;	//toggle OUTMOD between 0 and 4
-		P1OUT ^= RED_LED;
+		flagPlaySong=fTrue;		//Raise play song flag
+		P1OUT ^= RED_LED;		//Visually show
 	} else; //do nothing, not correct occasion
 
 }//end buttonISR handler.
@@ -165,12 +233,18 @@ void interrupt buttonISR(){
 
 //Timer compare match. Just toggle LEDS.
 void interrupt timerAISR(){
-	P1OUT ^= GREEN_LED;
-
-	//UPdate control register
-	TACCTL0 = CCIE + playingSound;				//update control register on whether it should be playing a sound.
+	P1OUT ^= GREEN_LED;			//Toggle for our own benefit
 }
 
+/*------------------------------------------*/
+
+void interrupt WDT_interval_handler(){
+	if (flagPlaySong){timeWaited+=.008;}		//If overflow and we are playing the song, add amount of time that has gone by.
+	else;
+}
+
+/*------------------------------------------*/
 //Declare interrupt vectors.
 ISR_VECTOR(buttonISR,".int02")
 ISR_VECTOR(timerAISR,".int09")
+ISR_VECTOR(WDT_interval_handler,".int10")
