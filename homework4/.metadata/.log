@@ -325,3 +325,318 @@ java.nio.channels.ClosedByInterruptException
 	at org.eclipse.cdt.internal.ui.text.c.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:144)
 	at org.eclipse.cdt.internal.ui.text.c.hover.CEditorTextHoverProxy.getHoverInfo2(CEditorTextHoverProxy.java:84)
 	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
+!SESSION 2013-03-18 16:38:00.215 -----------------------------------------------
+eclipse.buildId=I20120608-1200
+java.version=1.6.0_13
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -product com.ti.ccstudio.branding.product
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product com.ti.ccstudio.branding.product
+
+!ENTRY org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE Warnings while parsing the viewer contributions from the 'org.eclipse.ui.popupMenus' extension point
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.CEditorRulerActions/org.eclipse.cdt.debug.internal.ui.actions.CBreakpointPropertiesRulerActionDelegate'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.CEditorRulerActions/org.eclipse.cdt.debug.internal.ui.actions.EnableDisableBreakpointRulerActionDelegate'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.CEditorRulerActions/org.eclipse.cdt.debug.ui.actions.RulerCreateBreakpointInteractiveAction'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.AsmEditorRulerActions/org.eclipse.cdt.debug.internal.ui.actions.asm.CBreakpointPropertiesRulerActionDelegate'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.AsmEditorRulerActions/org.eclipse.cdt.debug.internal.ui.actions.asm.EnableDisableBreakpointRulerActionDelegate'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.debug.ui', id='AUTOGEN:::org.eclipse.cdt.debug.ui.AsmEditorRulerActions/org.eclipse.cdt.debug.ui.actions.asm.RulerCreateBreakpointInteractiveAction'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.dsf.ui', id='AUTOGEN:::org.eclipse.cdt.dsf.debug.ui.disassemblyRulerActions/org.eclipse.debug.ui.actions.RulerAddBreakpointAction'
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-03-18 16:38:28.951
+!MESSAGE invalid keybinding: Cannot bind to an incomplete key sequence: plug-in='org.eclipse.cdt.dsf.ui', id='org.eclipse.cdt.dsf.debug.ui.disassembly.commands.rulerToggleBreakpoint'
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.806
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showFunctionOffsets in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.807
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showFunctionOffsetsTooltip in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.808
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showCodeBytes in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.809
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showCodeBytesTooltip in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.810
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showAddress in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.osgi 2 1 2013-03-18 18:33:49.811
+!MESSAGE NLS missing message: DisassemblyPreferencePage_showAddressTooltip in: org.eclipse.cdt.dsf.debug.internal.ui.disassembly.DisassemblyMessages
+
+!ENTRY org.eclipse.cdt.dsf.ui 2 0 2013-03-18 18:33:50.763
+!MESSAGE Unable to locate file: /tmp/TI_MKLIBTw7SkT/SRC/cmpd.c
+
+!ENTRY org.eclipse.cdt.dsf.ui 2 0 2013-03-18 18:36:43.013
+!MESSAGE Unable to locate file: /tmp/TI_MKLIBTw7SkT/SRC/asr16.asm
+
+!ENTRY org.eclipse.cdt.dsf.ui 2 0 2013-03-18 18:36:43.101
+!MESSAGE Unable to locate file: /tmp/TI_MKLIBTw7SkT/SRC/lsl16.asm
+
+!ENTRY org.eclipse.cdt.dsf.ui 2 0 2013-03-18 18:36:50.387
+!MESSAGE Unable to locate file: /tmp/TI_MKLIBTw7SkT/SRC/asr16.asm
+
+!ENTRY org.eclipse.cdt.dsf.ui 2 0 2013-03-18 18:36:50.474
+!MESSAGE Unable to locate file: /tmp/TI_MKLIBTw7SkT/SRC/lsl16.asm
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 18:42:34.354
+!MESSAGE DS_ERROR: MSP430: Trouble Removing Breakpoint with the Action "Finish Auto Run" at 0xcd2e: Could not communicate with FET
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 18:42:50.442
+!MESSAGE DS_ERROR: MSP430: Failed to remove the debug state from the target before disconnecting.  There may still be breakpoint op-codes embedded in program memory.  It is recommended that you reset the emulator before you connect and reload your program before you continue debugging
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 18:43:37.948
+!MESSAGE DS_ERROR: MSP430: Trouble Setting Breakpoint with the Action "Remain Halted" at 0xc734: Could not read device memory
+
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2013-03-18 18:43:41.566
+!MESSAGE Request for monitor: 'RequestMonitor (com.ti.ccstudio.debug.service.BreakpointService$8$1@8548f2): Status ERROR: com.ti.ccstudio.debug code=10004 Insufficient resources.  You can free up one resource by disabling software breakpoint support com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support' resulted in an error.
+!SUBENTRY 1 com.ti.ccstudio.debug 4 10004 2013-03-18 18:43:41.567
+!MESSAGE Insufficient resources.  You can free up one resource by disabling software breakpoint support
+!STACK 0
+com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support
+	at com.ti.debug.engine.impl.BreakpointManager.checkForException(BreakpointManager.java:60)
+	at com.ti.debug.engine.impl.BreakpointManager.enable(BreakpointManager.java:115)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.dsEnabled(BreakpointManagerDMContext.java:690)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.modifyBreakpointProperties(BreakpointManagerDMContext.java:409)
+	at com.ti.ccstudio.debug.service.BreakpointService$8.safeRun(BreakpointService.java:697)
+	at com.ti.ccstudio.debug.SafeRunnable.run(SafeRunnable.java:30)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2013-03-18 18:43:41.568
+!MESSAGE Request for monitor: 'RequestMonitor (com.ti.ccstudio.debug.service.BreakpointService$8$1@8548f2): Status ERROR: com.ti.ccstudio.debug code=10004 Insufficient resources.  You can free up one resource by disabling software breakpoint support com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support' resulted in an error.
+!SUBENTRY 1 com.ti.ccstudio.debug 4 10004 2013-03-18 18:43:41.568
+!MESSAGE Insufficient resources.  You can free up one resource by disabling software breakpoint support
+!STACK 0
+com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support
+	at com.ti.debug.engine.impl.BreakpointManager.checkForException(BreakpointManager.java:60)
+	at com.ti.debug.engine.impl.BreakpointManager.enable(BreakpointManager.java:115)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.dsEnabled(BreakpointManagerDMContext.java:690)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.modifyBreakpointProperties(BreakpointManagerDMContext.java:409)
+	at com.ti.ccstudio.debug.service.BreakpointService$8.safeRun(BreakpointService.java:697)
+	at com.ti.ccstudio.debug.SafeRunnable.run(SafeRunnable.java:30)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2013-03-18 18:43:50.282
+!MESSAGE Request for monitor: 'RequestMonitor (com.ti.ccstudio.debug.service.BreakpointService$8$1@4d3904): Status ERROR: com.ti.ccstudio.debug code=10004 Insufficient resources.  You can free up one resource by disabling software breakpoint support com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support' resulted in an error.
+!SUBENTRY 1 com.ti.ccstudio.debug 4 10004 2013-03-18 18:43:50.282
+!MESSAGE Insufficient resources.  You can free up one resource by disabling software breakpoint support
+!STACK 0
+com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support
+	at com.ti.debug.engine.impl.BreakpointManager.checkForException(BreakpointManager.java:60)
+	at com.ti.debug.engine.impl.BreakpointManager.enable(BreakpointManager.java:115)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.dsEnabled(BreakpointManagerDMContext.java:690)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.modifyBreakpointProperties(BreakpointManagerDMContext.java:409)
+	at com.ti.ccstudio.debug.service.BreakpointService$8.safeRun(BreakpointService.java:697)
+	at com.ti.ccstudio.debug.SafeRunnable.run(SafeRunnable.java:30)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2013-03-18 18:43:50.283
+!MESSAGE Request for monitor: 'RequestMonitor (com.ti.ccstudio.debug.service.BreakpointService$8$1@4d3904): Status ERROR: com.ti.ccstudio.debug code=10004 Insufficient resources.  You can free up one resource by disabling software breakpoint support com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support' resulted in an error.
+!SUBENTRY 1 com.ti.ccstudio.debug 4 10004 2013-03-18 18:43:50.283
+!MESSAGE Insufficient resources.  You can free up one resource by disabling software breakpoint support
+!STACK 0
+com.ti.debug.engine.IBreakpointManager$BreakpointException: Insufficient resources.  You can free up one resource by disabling software breakpoint support
+	at com.ti.debug.engine.impl.BreakpointManager.checkForException(BreakpointManager.java:60)
+	at com.ti.debug.engine.impl.BreakpointManager.enable(BreakpointManager.java:115)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.dsEnabled(BreakpointManagerDMContext.java:690)
+	at com.ti.ccstudio.debug.service.contexts.BreakpointManagerDMContext.modifyBreakpointProperties(BreakpointManagerDMContext.java:409)
+	at com.ti.ccstudio.debug.service.BreakpointService$8.safeRun(BreakpointService.java:697)
+	at com.ti.ccstudio.debug.SafeRunnable.run(SafeRunnable.java:30)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 18:44:14.967
+!MESSAGE DS_ERROR: MSP430: Can't Run Target CPU: Could not communicate with FET
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 18:53:06.485
+!MESSAGE DS_ERROR: MSP430: Can't Run Target CPU: Could not communicate with FET
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 19:24:16.540
+!MESSAGE DS_ERROR: MSP430: Trouble Halting Target CPU: Could not terminate EEM polling thread.
+
+
+!ENTRY org.eclipse.cdt.core 4 0 2013-03-18 19:51:27.642
+!MESSAGE Error
+!STACK 0
+java.nio.channels.ClosedByInterruptException
+	at java.nio.channels.spi.AbstractInterruptibleChannel.end(Unknown Source)
+	at sun.nio.ch.FileChannelImpl.size(Unknown Source)
+	at org.eclipse.cdt.internal.core.parser.scanner.FileCharArray.create(FileCharArray.java:44)
+	at org.eclipse.cdt.internal.core.parser.InternalParserUtil.createFileContent(InternalParserUtil.java:247)
+	at org.eclipse.cdt.internal.core.parser.InternalParserUtil.createExternalFileContent(InternalParserUtil.java:233)
+	at org.eclipse.cdt.core.parser.FileContent.createForExternalFileLocation(FileContent.java:126)
+	at org.eclipse.cdt.core.parser.FileContent.createForExternalFileLocation(FileContent.java:118)
+	at org.eclipse.cdt.internal.core.parser.SavedFilesProvider.getContentForInclusion(SavedFilesProvider.java:42)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor$1.checkFile(CPreprocessor.java:156)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor$1.checkFile(CPreprocessor.java:1)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.findInclusion(CPreprocessor.java:1114)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.executeInclude(CPreprocessor.java:1462)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.executeDirective(CPreprocessor.java:1238)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.internalFetchToken(CPreprocessor.java:869)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.fetchToken(CPreprocessor.java:593)
+	at org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor.nextToken(CPreprocessor.java:690)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.fetchToken(AbstractGNUSourceCodeParser.java:273)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.nextToken(AbstractGNUSourceCodeParser.java:297)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.acceptInactiveCodeBoundary(AbstractGNUSourceCodeParser.java:358)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.declarationList(AbstractGNUSourceCodeParser.java:1319)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.parseTranslationUnit(AbstractGNUSourceCodeParser.java:1292)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.translationUnit(AbstractGNUSourceCodeParser.java:1287)
+	at org.eclipse.cdt.internal.core.dom.parser.AbstractGNUSourceCodeParser.parse(AbstractGNUSourceCodeParser.java:653)
+	at org.eclipse.cdt.core.dom.parser.AbstractCLikeLanguage.getASTTranslationUnit(AbstractCLikeLanguage.java:149)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:869)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:819)
+	at sun.reflect.GeneratedMethodAccessor169.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.rtsc.xdctools.ui.contentassist.RTSCHelpProvider.getFunctionSummaries(Unknown Source)
+	at org.eclipse.rtsc.xdctools.ui.contentassist.RTSCHelpProvider.getFunctionInfo(Unknown Source)
+	at org.eclipse.rtsc.xdctools.ui.contentassist.RTSCHelpProvider.getFunctionInfo(Unknown Source)
+	at org.eclipse.cdt.internal.ui.text.CHelpSettings.getFunctionInfo(CHelpSettings.java:121)
+	at org.eclipse.cdt.internal.ui.CHelpProviderManager.getFunctionInfo(CHelpProviderManager.java:163)
+	at org.eclipse.cdt.internal.ui.text.c.hover.CDocHover.getHoverInfo(CDocHover.java:81)
+	at org.eclipse.cdt.internal.ui.text.c.hover.AbstractCEditorTextHover.getHoverInfo2(AbstractCEditorTextHover.java:84)
+	at org.eclipse.cdt.internal.ui.text.c.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:144)
+	at org.eclipse.cdt.internal.ui.text.c.hover.CEditorTextHoverProxy.getHoverInfo2(CEditorTextHoverProxy.java:84)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 19:54:58.975
+!MESSAGE DS_ERROR: MSP430: Trouble Halting Target CPU: Could not terminate EEM polling thread.
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 19:55:24.073
+!MESSAGE DS_ERROR: MSP430: Trouble Halting Target CPU: Could not terminate EEM polling thread.
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 19:55:36.909
+!MESSAGE DS_ERROR: MSP430: Error initializing emulator: Could not find MSP-FET430UIF on specified COM port
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2013-03-18 19:55:37.028
+!MESSAGE DS_ERROR: Error initializing emulator:
+Could not find MSP-FET430UIF on specified COM port
+
+!ENTRY org.eclipse.ui 4 0 2013-03-18 20:17:38.418
+!MESSAGE Problems opening perspective 'com.ti.ccstudio.TICPerspective'
+
+!ENTRY org.eclipse.ui 4 4 2013-03-18 20:17:39.257
+!MESSAGE The proxied handler was the wrong class
+
+!ENTRY org.eclipse.ui 4 0 2013-03-18 20:17:39.258
+!MESSAGE The proxied handler was the wrong class
+!STACK 0
+java.lang.ClassCastException: com.ti.ccstudio.gui.composer.internal.ui.commands.ApplicationViewerHandler cannot be cast to org.eclipse.core.commands.IHandler
+	at org.eclipse.ui.internal.handlers.HandlerProxy.loadHandler(HandlerProxy.java:350)
+	at org.eclipse.ui.internal.handlers.HandlerProxy.isEnabled(HandlerProxy.java:319)
+	at org.eclipse.core.commands.Command.isEnabled(Command.java:862)
+	at org.eclipse.core.commands.Command.setHandler(Command.java:994)
+	at org.eclipse.ui.internal.handlers.HandlerAuthority.updateCommand(HandlerAuthority.java:457)
+	at org.eclipse.ui.internal.handlers.HandlerAuthority.deactivateHandler(HandlerAuthority.java:312)
+	at org.eclipse.ui.internal.handlers.HandlerService.deactivateHandler(HandlerService.java:148)
+	at org.eclipse.ui.internal.handlers.HandlerService.deactivateHandlers(HandlerService.java:157)
+	at org.eclipse.ui.internal.handlers.HandlerPersistence.clearActivations(HandlerPersistence.java:104)
+	at org.eclipse.ui.internal.handlers.HandlerPersistence.dispose(HandlerPersistence.java:125)
+	at org.eclipse.ui.internal.handlers.HandlerService.dispose(HandlerService.java:163)
+	at org.eclipse.ui.internal.services.ServiceLocator.dispose(ServiceLocator.java:142)
+	at org.eclipse.ui.internal.Workbench.shutdown(Workbench.java:3057)
+	at org.eclipse.ui.internal.Workbench.busyClose(Workbench.java:1123)
+	at org.eclipse.ui.internal.Workbench.access$15(Workbench.java:1040)
+	at org.eclipse.ui.internal.Workbench$25.run(Workbench.java:1284)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:70)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1282)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1254)
+	at org.eclipse.ui.internal.WorkbenchWindow.busyClose(WorkbenchWindow.java:727)
+	at org.eclipse.ui.internal.WorkbenchWindow.access$0(WorkbenchWindow.java:715)
+	at org.eclipse.ui.internal.WorkbenchWindow$6.run(WorkbenchWindow.java:867)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:70)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:865)
+	at org.eclipse.jface.window.Window.handleShellCloseEvent(Window.java:741)
+	at org.eclipse.jface.window.Window$3.shellClosed(Window.java:687)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:98)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1053)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1077)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1062)
+	at org.eclipse.swt.widgets.Decorations.closeWidget(Decorations.java:309)
+	at org.eclipse.swt.widgets.Decorations.WM_CLOSE(Decorations.java:1694)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4530)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:341)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1627)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2069)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:4976)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProcW(Native Method)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(OS.java:2541)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:498)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4623)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:341)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1627)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2069)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:4976)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProcW(Native Method)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(OS.java:2541)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:498)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4623)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:341)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1627)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2069)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:4976)
+	at org.eclipse.swt.internal.win32.OS.DispatchMessageW(Native Method)
+	at org.eclipse.swt.internal.win32.OS.DispatchMessage(OS.java:2546)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3756)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2701)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2665)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2499)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:679)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:668)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:124)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:353)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:180)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:629)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
