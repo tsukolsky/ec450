@@ -3,7 +3,7 @@
 | Author: Todd Sukolsky
 | ID: U50387016
 | Initial Build: 3/18/2013
-| Last Revised: 3/18/2013
+| Last Revised: 3/20/2013
 | Copyright of Todd Sukolsky
 |================================================================================
 | Description: This program is the main program for homework 4 of BU's ECE450.
@@ -19,11 +19,13 @@
 |					  should be G major but something is off, I think C# ending? Can't figure it out.
 |					  Added "Special Feature". User can press button longer or shorter to speed up
 |					  tones. Longer it's left wihtout second press, quicker it goes. Three stages.
+|			 3/20-Changed tones from a state machine to a simple two system while loop with pauses.
+|				  Added the main segments of the "Imperial March-Darth Vader Theme".Works well.
 |
 |================================================================================
 | *NOTES: Tone Frequencies: C=261.63, D=293.66, E=329.63, F=349.23, G=392.00, A=440
 |							B=493.88...That C is the middle C
-|		  Imperial March starts with: C#-C#-C#-A-E-C#-A-E-C#, G#-G#-G#-B#-G#-C_low-A-E-C,
+|		  Imperial March starts with: G G G Eb Bb G Eb Bb G D D D Eb Bb Gb Eb Bb G
 \*******************************************************************************/
 
 #include "msp430g2553.h"
@@ -35,28 +37,44 @@
 #define TA0_BIT (1 << 1)		//0x02 => Bit mask corresponding to TA0
 
 //Define Tone Half Frequencies
-#define C_tone_low 261
-#define Csh_tone_low 277
-#define D_tone 293
-#define E_tone 330
-#define F_tone 350
-#define G_tone 392
-#define Gsh_tone 415
-#define A_tone 220
-#define B_tone 494
-#define C_tone_high 523//same as B#
-#
+#define C			523
+#define Csharp		554
+#define D 			587
+#define Dsharp_high 622
+#define Eflat_low 	311
+#define Eflat_high 	622
+#define E_high 		660
+#define Fsharp_high 740
+#define F_high 		698
+#define G			392
+#define Gflat_low 	370
+#define Gsharp_low 	415
+#define G_high 		784
+#define Gflat_high 	740
+#define Gsharp_high	830
+#define A			440
+#define Bflat 		466
+#define B 			493
+
+
 
 //Define Oscillator frequency
 #define FOSC 1000000
 
-//Define wait times
-#define STATE_1_TIME	.5
-#define STATE_2_TIME	.6
-#define STATE_3_TIME	.3
-#define STATE_4_TIME	.4
-#define STATE_5_TIME	.175
-#define PAUSE_TIME		.15
+//Define wait times. A quarte note corrseponds to .925ms+.15ms =1 second, so an eigth note is .925*1/2 and a sixteenth note is .925*1/4
+#define STATE_1_TIME	.925
+#define STATE_2_TIME	.925*(.75)
+#define STATE_3_TIME	.925*(.25)
+#define STATE_4_TIME	.925
+#define PAUSE_TIME		.075
+
+#define whole		3.925
+#define quarter 	.925
+#define triple 		.925*.75
+#define eigth		.925*.5
+#define sixteenth	.925*.25
+#define half		1.925
+#define small 		.075
 
 //Define bools
 #define fTrue	 1
@@ -68,15 +86,28 @@
 /*==============================================*/
 /*				Global Variables				*/
 /*==============================================*/
-unsigned int flagPlaySong=fFalse,flagWaitingForPress=fFalse;
+unsigned int flagPlaySong=fFalse, flagWaitingForPress=fFalse;
 float timeWaited=0,timeSincePress=0;
-unsigned int repeatedToneReps=0, state=0, lastTone=0, speedDivisor=1;
+unsigned int speedDivisor=1;
+
+const unsigned int toneArray[66]={G,G,G,Eflat_low,Bflat,G,Eflat_low,Bflat,G,D,D,D,Eflat_high,Bflat,Gflat_low,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		/*1*/Gsharp_low,Csharp,C,B,Bflat,A,Bflat,/*2*/Eflat_low,Gflat_low, Eflat_low,Gflat_low,/*marker*/G,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		/*3*/Gsharp_low,Csharp,C,B,Bflat,A,Bflat,/*4*/Eflat_low,Gflat_low,Eflat_low,Bflat,G,Eflat_low,Bflat,G};
+
+const float noteArray[66]={quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,/*start*/quarter,triple,sixteenth,
+		quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*1*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*2*/eigth,quarter,triple,sixteenth,/*marker*/quarter,triple,
+		sixteenth,half,quarter,triple,sixteenth,quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*3*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,
+		eigth,/*4*/eigth,quarter,triple,sixteenth,quarter,triple,sixteenth,whole};
+const float pauseArray[66]={small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,/*start*/small,small,small,small,small,small,small,small,
+		(small+eigth),small,small,small,small,small,small,(small+eigth),small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,(small+eigth),small,small,
+		small,small,small,small,(small+eigth),small,small,small,small,small,small,small,small};
 /*==============================================*/
 /*			Forward Function Declarations		*/
 /*==============================================*/
 void initTimerA();
 void initButtonAndLEDS();
 void playSong();
+void playSong2();
 
 /*==============================================*/
 /*				   Main Program					*/
@@ -94,13 +125,14 @@ void main(void){
 	//Initialize timers, buttons, LEDs
 	initButtonAndLEDS();
 	initTimerA();
-
+	timeWaited=0;
+	timeSincePress=0;
 	//Enable global interrupts
 	_bis_SR_register(GIE);
 
 	//Processing Loop
 	while(fTrue){
-		if (flagPlaySong){; playSong(); flagPlaySong=fFalse;}	//Play song then reset flag.
+		if (flagPlaySong){playSong2(); flagPlaySong=fFalse;}	//Play song then reset flag.
 		else;
 	}
 }
@@ -114,7 +146,7 @@ void initTimerA(){
 	TA0CTL |= TACLR; 	//reset clock
 	TA0CTL = TASSEL1+ID_0+MC_1;					//clock source is SMCLK, clk divider =1, up mode
 	TA0CCTL0 = CCIE;							//turn on output compare interrupt, initially OUTMOD
-	TA0CCR0 = FOSC/C_tone_low-1;					//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
+	TA0CCR0 = FOSC/G-1;					//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
 	
 	//Connect Timer output to pin TA0
 	P1SEL |= TA0_BIT;
@@ -122,152 +154,26 @@ void initTimerA(){
 }
 
 /*------------------------------------------*/
-
-void playSong(){
-	unsigned int whichRun=0;
+void playSong2(){
+	//Internal Variables
 	unsigned int playingSong=fTrue;
-	state=0;
-	lastTone=0;
+	unsigned int whichNote=0;
 
+	//Play until the counter hits the end
 	while (playingSong){
-	//State machine
-	switch (state){
-	//Initialization state
-	case 0:{
-		TACCTL0 ^= OUTMOD_4;		//turn sound on, move to state 1
-		timeWaited=0;
-		repeatedToneReps=0;
-		state=1;
-		break;
-	}
-	//Triple tone to play, beginning
-	case 1: {
-		//If we haven't played the beginning tone three times, play the tone for the correct amount of time
-		//Haven't played three times, if timeWaited < time to play then keep playing the tone, stay in same state.
-		TA0CCR0=FOSC/Csh_tone_low-1;
-		while (timeWaited < STATE_1_TIME/speedDivisor);
-		timeWaited=0; 				//reset time waited
-		lastTone=state; 			//set where we were to this state
-		state=15;					//go to pause state
-		//We played the tone enough times, Set the reps to 0, timeWaited reset, then go to pause state.
-		if (repeatedToneReps < 4){
-			repeatedToneReps++;
-		}
-		break;
-	}
-
-	case 2: {
-		//Playing the middle C, if the timeWaited so far is less than tone time, play the tone
-		TACCR0=FOSC/A_tone-1;
-		while (timeWaited < STATE_2_TIME/speedDivisor);
-		//We played the tone, go to pause state while resetting timeWaited.
-		timeWaited=0; lastTone=state; state=15;		//Go to pause
-		if (whichRun==1){whichRun++;}
-		break;
-	}
-	case 3:{
-		//Playing the 5th note or 8th. If timeWaited is less than tone time, keep playhing the tone
-		TACCR0=FOSC/E_tone-1;
-		while (timeWaited < STATE_3_TIME/speedDivisor);
-		//Done playing tone? Reset time waited and go to puase state.
-		timeWaited=0;lastTone=state; state=15;
-		break;
-	}
-	case 4:{
-		//Playing the 6th note or 9th. If timeWaited is less than tone time, keep playhing the tone
-		TACCR0=FOSC/Csh_tone_low-1;
-		while (timeWaited < STATE_4_TIME/speedDivisor);
-		//Done playing tone? Reset time waited and go to pause state
-		timeWaited=0;lastTone=state; state=15; whichRun++;
-		break;
-	}
-	case 5:{
-		TACCR0=FOSC/Gsh_tone-1;
-		while (timeWaited < STATE_1_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 6:{
-		TACCR0=FOSC/Gsh_tone-1;
-		while (timeWaited < STATE_1_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 7:{
-		TACCR0=FOSC/Gsh_tone-1;
-		while (timeWaited < STATE_1_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 8:{
-		TACCR0=FOSC/C_tone_high-1;
-		while (timeWaited < STATE_2_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 9:{
-		TACCR0=FOSC/Gsh_tone-1;
-		while (timeWaited < STATE_3_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 10:{
-		TACCR0=FOSC/C_tone_low-1;
-		while (timeWaited < STATE_4_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 11:{
-		TACCR0=FOSC/A_tone-1;
-		while (timeWaited < STATE_2_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 12:{
-		TACCR0=FOSC/E_tone-1;
-		while (timeWaited < STATE_3_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 13:{
-		TACCR0=FOSC/C_tone_low-1;
-		while (timeWaited < STATE_4_TIME/speedDivisor);
-		timeWaited=0; lastTone=state; state=15;
-		break;
-	}
-	case 14:{
-		//Get out of this sucker.
-		TACCTL0=CCIE;	//no more sound.
-		playingSong=fFalse;		//break out of the while loop, done playing the song.
-		break;
-	}
-	case 15:{
-		//IF timeWaited is less than pause time, keep pausing without sound
-		if (timeWaited < PAUSE_TIME/speedDivisor){
-			//Don't output sound.
-			TACCTL0 = CCIE;
-			while (timeWaited <= PAUSE_TIME/speedDivisor);	//Do nothing
-		} else;
-
-		//Going back into playing tones
-		//We are going to go back to a tone, figure out whcih one then reset timeWaited
-		if (lastTone < 14){
-			if (repeatedToneReps >= 3 && whichRun<1){
-				state=lastTone+1;									//should move to state 2
-			}else if(repeatedToneReps >= 3 && whichRun == 1){
-				state=2;										//repeat the C-F-D phrase
-			}else if (repeatedToneReps < 3){state=lastTone;}		//repeat the first tone three times
-			else if (repeatedToneReps >= 3 && whichRun >=1){state=lastTone+1;}
-			else;
-			TACCTL0 = CCIE + OUTMOD_4;	//turn sound back on
-		}else {state=0;}
-		timeWaited=0;
-		break;
-	}//end else timeWaited < PAUSE_TIME
-	default:{state=0; whichRun=0;break;}
-	}//end switch
+		TACCR0 = FOSC/toneArray[whichNote]-1;							//selects which tone
+		timeWaited=0;													//set timeWaited to 0
+		TACCTL0 = CCIE + OUTMOD_4;										//turn sound on for tone
+		while (timeWaited < noteArray[whichNote]/speedDivisor);			//Wait for the tone to play it's full length
+		timeWaited=0;													//reset timeWaited
+		TACCTL0 = CCIE;													//turn sound off for rest
+		while (timeWaited < pauseArray[whichNote]/speedDivisor);		//wait till rest is complete
+		if (whichNote >= 65){playingSong=fFalse;}						//if we are done playing, bring flag down which will exit loop/function
+		else{whichNote+=1;}
 	}//end while
-}//end function Play song
+
+}//end playSong2
+
 /*------------------------------------------*/
 
 void initButtonAndLEDS(){
@@ -289,20 +195,34 @@ void initButtonAndLEDS(){
 /*==========================================*/
 
 void interrupt buttonISR(){
+	//IF the flag corresponding to the button is hit, continue
 	if (P1IFG&BUTTON_BIT){
 		P1IFG &= ~BUTTON_BIT;	//lower flag
-		if (flagWaitingForPress){
-			flagWaitingForPress=fFalse;
-			if (timeSincePress < 1){speedDivisor=1;}
-			else if (timeSincePress >=1 && timeSincePress <=3){speedDivisor=3;}
-			else {speedDivisor=5;}
-			flagPlaySong=fTrue;
-			timeSincePress=0;
-			P1OUT &= ~RED_LED;
-		} else {
-			flagWaitingForPress=fTrue;
-			P1OUT |= RED_LED;
-		}
+		//As long as we aren't playing the song, see if we are still waiting.
+		if (!flagPlaySong){
+			//IF we were waiting for the second press, we now have it. Cut the cord and see how long it was, set speedDivisor based on that.
+			if (flagWaitingForPress){
+				unsigned int flagOKtoPlay=fTrue;
+				flagWaitingForPress=fFalse;
+				if (timeSincePress > .35 && timeSincePress < 1){speedDivisor=1;}		//small debounce
+				else if (timeSincePress >=1 && timeSincePress <=3){speedDivisor=2;}
+				else if (timeSincePress >3 && timeSincePress <=5){speedDivisor=4;}
+				else if (timeSincePress >5 && timeSincePress <=7){speedDivisor=6;}
+				else if(timeSincePress >7 &&timeSincePress <8){speedDivisor=7;}
+				else {flagOKtoPlay=fFalse;}
+
+				//If okay to play, go forward and play everthing
+				if(flagOKtoPlay){
+					flagPlaySong=fTrue;
+					timeSincePress=0;
+					P1OUT &= ~RED_LED;
+				}else{flagWaitingForPress=fFalse;}
+			} else {
+				//We haven't gotten an initial press yet, set the flag high so the counter starts and bring RED_LED up
+				flagWaitingForPress=fTrue;
+				P1OUT |= RED_LED;
+			}
+		}else;	//do nothing
 	} else; //do nothing, not correct occasion
 
 }//end buttonISR handler.
@@ -311,14 +231,27 @@ void interrupt buttonISR(){
 
 //Timer compare match. Just toggle LEDS.
 void interrupt timerAISR(){
-	P1OUT ^= GREEN_LED;			//Toggle for our own benefit
+	if (flagPlaySong){P1OUT |= GREEN_LED; timeSincePress=0;}			//Toggle for our own benefit
+	else{P1OUT &= ~GREEN_LED; timeWaited=0;}
 }
 
 /*------------------------------------------*/
 
 void interrupt WDT_interval_handler(){
+	//If playing the song, add the time between to the timeWaited
 	if (flagPlaySong){timeWaited+=.008;}		//If overflow and we are playing the song, add amount of time that has gone by.
-	else if (flagWaitingForPress){timeSincePress+=.008;}
+	//If waiting for a second press, add the time we've been waitin
+	else if (!flagPlaySong){
+		timeSincePress+=.008;
+		//Set a timeout for the button press at 10 seconds
+		if (timeSincePress > 8.0){
+			timeSincePress = 0;
+			speedDivisor=8;
+			flagWaitingForPress=fFalse;
+			flagPlaySong=fTrue;
+			P1OUT &= ~RED_LED;
+		}
+	}
 	else;
 }
 

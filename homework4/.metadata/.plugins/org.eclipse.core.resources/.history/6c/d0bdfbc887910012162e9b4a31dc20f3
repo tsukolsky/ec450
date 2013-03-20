@@ -1,0 +1,253 @@
+/*******************************************************************************\
+| main.c
+| Author: Todd Sukolsky
+| ID: U50387016
+| Initial Build: 3/18/2013
+| Last Revised: 3/18/2013
+| Copyright of Todd Sukolsky
+|================================================================================
+| Description: This program is the main program for homework 4 of BU's ECE450.
+|  	The assignment require four tones to be played over a small speaker, that a button
+|	can manipulate (turn on, off, raise tone) of the notes, and one advanced feature.
+|	THe advanced feature, on initial build, is still TBD. See later "Revisions" and
+|	"Notes" for what was actually implemented.
+|--------------------------------------------------------------------------------
+| Revisions: 3/18- Initial Build. Original setup is just to have it play C tone
+|				   to mess around with. Next revision will have it do different things.
+|			 3/18(2)- Finished module. now it has the full beginning melody of "Imperial March"
+|					  with almost all the right notes. There is an error in a flat or sharp,
+|					  should be G major but something is off, I think C# ending? Can't figure it out.
+|					  Added "Special Feature". User can press button longer or shorter to speed up
+|					  tones. Longer it's left wihtout second press, quicker it goes. Three stages.
+|
+|================================================================================
+| *NOTES: Tone Frequencies: C=261.63, D=293.66, E=329.63, F=349.23, G=392.00, A=440
+|							B=493.88...That C is the middle C
+|		  Imperial March starts with: G G G Eb Bb G Eb Bb G D D D Eb Bb Gb Eb Bb G
+\*******************************************************************************/
+
+#include "msp430g2553.h"
+
+//Define Button, Pin, LEDs
+#define RED_LED (1 << 0) 		//0x01
+#define GREEN_LED (1 << 6)		//0x40
+#define BUTTON_BIT (1 << 3) 		//0x08
+#define TA0_BIT (1 << 1)		//0x02 => Bit mask corresponding to TA0
+
+//Define Tone Half Frequencies
+#define C			523
+#define Csharp		554
+#define D 			587
+#define Dsharp_high 622
+#define Eflat_low 	311
+#define Eflat_high 	622
+#define E_high 		660
+#define Fsharp_high 740
+#define F_high 		698
+#define G		392
+#define Gflat_low 	370
+#define Gsharp_low 	415
+#define G_high 		784
+#define Gflat_high 	740
+#define Gsharp_high	830
+#define A			440
+#define Bflat 		466
+#define B 			493
+
+
+
+//Define Oscillator frequency
+#define FOSC 1000000
+
+//Define wait times. A quarte note corrseponds to .925ms+.15ms =1 second, so an eigth note is .925*1/2 and a sixteenth note is .925*1/4
+#define STATE_1_TIME	.925
+#define STATE_2_TIME	.925*(.75)
+#define STATE_3_TIME	.925*(.25)
+#define STATE_4_TIME	.925
+#define PAUSE_TIME		.075
+
+#define quarter 	.925
+#define triple 		.925*.75
+#define eigth		.925*.5
+#define sixteenth	.925*.25
+#define half		1.925
+#define small 		.075
+
+//Define bools
+#define fTrue	 1
+#define fFalse	 0
+
+//Define MACROS
+#define __resetTimeWaited() timeWaited=0;
+
+/*==============================================*/
+/*				Global Variables				*/
+/*==============================================*/
+unsigned int flagPlaySong=fFalse, flagWaitingForPress=fFalse;
+float timeWaited=0,timeSincePress=0;
+unsigned int speedDivisor=1;
+
+const unsigned int toneArray[63]={G,G,G,Eflat_low,Bflat,G,Eflat_low,Bflat,G,D,D,D,Eflat_high,Bflat,Gflat_low,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		Gsharp_low,Csharp,C,B,Bflat,A,Bflat,Eflat_low,Gflat_low, Eflat_low,Gflat_low,/*marker*/G,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		Gsharp_low,Csharp,C,B,Bflat,A,Bflat,Eflat_low,Gflat_low,Eflat_low,Gflat_low,Bflat};
+
+const float noteArray[63]={quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,quarter,triple,sixteenth,
+		quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*Longer1*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,/*2*/eigth,quarter,triple,sixteenth,/*marker*/quarter,triple,
+		sixteenth,half,quarter,triple,sixteenth,quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*3*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,
+		eigth,/*4*/eigth,quarter,triple,sixteenth,half};
+const float pauseArray[63]={small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,/*start*/small,small,small,small,small,small,small,small,(small+eigth+small),
+		small,small,small,small,small,small,(small+small+eigth),small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,(small+small+eigth),small,small,small,
+		small,small,small,(small+small+eigth),small,small,small,small,small};
+/*==============================================*/
+/*			Forward Function Declarations		*/
+/*==============================================*/
+void initTimerA();
+void initButtonAndLEDS();
+void playSong();
+void playSong2();
+
+/*==============================================*/
+/*				   Main Program					*/
+/*==============================================*/
+
+void main(void){
+	//Set watchdog and enable it's interrupt
+	WDTCTL = (WDTPW + WDTTMSEL + WDTCNTCL + 1);	//Boots off 1MHz clock, div 9192 gives interrupt every ~8.2 ms
+    IE1 |= WDTIE;
+
+    //Set timing
+	BCSCTL1 = CALBC1_1MHZ;		//1MHz calibration for clock
+	DCOCTL = CALDCO_1MHZ;		//"
+
+	//Initialize timers, buttons, LEDs
+	initButtonAndLEDS();
+	initTimerA();
+
+	//Enable global interrupts
+	_bis_SR_register(GIE);
+
+	//Processing Loop
+	while(fTrue){
+		if (flagPlaySong){playSong2(); flagPlaySong=fFalse;}	//Play song then reset flag.
+		else;
+	}
+}
+
+
+/*==============================================*/
+/*				Functions						*/
+/*==============================================*/
+
+void initTimerA(){
+	TA0CTL |= TACLR; 	//reset clock
+	TA0CTL = TASSEL1+ID_0+MC_1;					//clock source is SMCLK, clk divider =1, up mode
+	TA0CCTL0 = CCIE;							//turn on output compare interrupt, initially OUTMOD
+	TA0CCR0 = FOSC/G-1;					//when output is triggered. TO make C_tone, eq => 261Hz= 1MHz/(x) ==> x=1MHz/(2*C_tone)
+	
+	//Connect Timer output to pin TA0
+	P1SEL |= TA0_BIT;
+	P1DIR |= TA0_BIT;
+}
+
+/*------------------------------------------*/
+void playSong2(){
+	//Internal Variables
+	unsigned int playingSong=fTrue;
+	unsigned int whichNote=0;
+
+	//Play until the counter hits the end
+	while (playingSong){
+		TACCR0 = FOSC/toneArray[whichNote]-1;							//selects which tone
+		timeWaited=0;													//set timeWaited to 0
+		TACCTL0 = CCIE + OUTMOD_4;										//turn sound on for tone
+		while (timeWaited < noteArray[whichNote]/speedDivisor);			//Wait for the tone to play it's full length
+		timeWaited=0;													//reset timeWaited
+		TACCTL0 = CCIE;													//turn sound off for rest
+		while (timeWaited < pauseArray[whichNote]/speedDivisor);		//wait till rest is complete
+		if (whichNote >= 18){playingSong=fFalse;}						//if we are done playing, bring flag down which will exit loop/function
+		else{whichNote+=1;}
+	}//end while
+
+}//end playSong2
+
+/*------------------------------------------*/
+
+void initButtonAndLEDS(){
+    //Initialize LEDs port
+    P1DIR |= (RED_LED + GREEN_LED);
+    P1OUT |= GREEN_LED;					//set green high initially
+    P1OUT &= ~RED_LED;					//set red low initially
+
+    //Initialize Button
+    P1OUT |= BUTTON_BIT;				//Declare a pull up
+    P1REN |= BUTTON_BIT;				//Enable PUll up
+    P1IES |= BUTTON_BIT;				//set to trigger on falling edge
+    P1IFG &= ~BUTTON_BIT;				//Make sure flag is cleared initially
+    P1IE |= BUTTON_BIT;					//Enable interrupt for button
+}
+
+/*==========================================*/
+/*				  ISR's						*/
+/*==========================================*/
+
+void interrupt buttonISR(){
+	//IF the flag corresponding to the button is hit, continue
+	if (P1IFG&BUTTON_BIT){
+		P1IFG &= ~BUTTON_BIT;	//lower flag
+		//As long as we aren't playing the song, see if we are still waiting.
+		if (!flagPlaySong){
+			//IF we were waiting for the second press, we now have it. Cut the cord and see how long it was, set speedDivisor based on that.
+			if (flagWaitingForPress){
+				flagWaitingForPress=fFalse;
+				if (timeSincePress > .008*10 && timeSincePress < 1){speedDivisor=1;}		//small debounce
+				else if (timeSincePress >=1 && timeSincePress <=3){speedDivisor=3;}
+				else if (timeSincePress >3 && timeSincePress <=5){speedDivisor=5;}
+				else if (timeSincePress >5 && timeSincePress <=7){speedDivisor=7;}
+				else {speedDivisor=9;}
+				flagPlaySong=fTrue;
+				timeSincePress=0;
+				P1OUT &= ~RED_LED;
+				TACCTL0 = CCIE + OUTMOD_4;												//turn on the sound
+			} else {
+				//We haven't gotten an initial press yet, set the flag high so the counter starts and bring RED_LED up
+				flagWaitingForPress=fTrue;
+				P1OUT |= RED_LED;
+			}
+		}else;	//do nothing
+	} else; //do nothing, not correct occasion
+
+}//end buttonISR handler.
+
+/*------------------------------------------*/
+
+//Timer compare match. Just toggle LEDS.
+void interrupt timerAISR(){
+	if (flagPlaySong){P1OUT |= GREEN_LED;}			//Toggle for our own benefit
+	else{P1OUT &= ~GREEN_LED;}
+}
+
+/*------------------------------------------*/
+
+void interrupt WDT_interval_handler(){
+	//If playing the song, add the time between to the timeWaited
+	if (flagPlaySong){timeWaited+=.008;}		//If overflow and we are playing the song, add amount of time that has gone by.
+	//If waiting for a second press, add the time we've been waitin
+	else if (flagWaitingForPress){
+		timeSincePress+=.008;
+		//Set a timeout for the button press at 10 seconds
+		if (timeSincePress > 10){
+			timeSincePress = 0;
+			speedDivisor=10;
+			flagWaitingForPress=fFalse;
+			flagPlaySong=fTrue;
+			P1OUT &= ~RED_LED;
+		}
+	}
+	else;
+}
+
+/*------------------------------------------*/
+//Declare interrupt vectors.
+ISR_VECTOR(buttonISR,".int02")
+ISR_VECTOR(timerAISR,".int09")
+ISR_VECTOR(WDT_interval_handler,".int10")
