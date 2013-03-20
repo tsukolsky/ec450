@@ -1,0 +1,35 @@
+Todd Sukolsky Homework 4 Writeup:
+
+Description: My program/song will play the Star Wars "Imperial March", about 2/3 of it anyway.
+	Originally I made the first few bars of the song as a state machine and on 3/20 I changed
+	it to a simple while loop that plays tones, with certain rests, until the last note is played.
+	The function that does this is playSong(). To see the old implementations, go to 
+	https://github.com/tsukolsky/ec450.git/homework4 and review old commits with the state machine.
+	This code is much easier to understand as long as you disregard the arrays and what's in them.
+	
+	Notes are taken by frequencies, and then the counter for TimerA is set to interrupt when the
+	register hits the compare value. All it does it turn on the GREEN LED if the song is playing
+	or keeps it off if its not playing. TimerA is used to create the tone at the correct frequency.
+	This is done by setting the compare register to a certain value determined by Oscillator frequency 
+	and note frequency. By setting OUTMOD_4 in the control register TA0 (pin 1.1) is toggled which
+	creates a square wave/sound when put through a speaker.
+	
+	The watchdog timer is used to increment time variables. If the song is playing, the interrupt will incrment a timing counter
+	that is used to distinguish between when a note should be played or a rest should be taken. Looking
+	at the imlementation of playSong() will make more sense.
+	
+	To start the song, press the button once and then again quickly. The fun feature is the longer you wait
+	to press the button a second time, the quicker the song will play. The watchdog deals with keeping track
+	of how much time has gone by between button presses and if there is a timeout (8 seconds) it will turn
+	the song on and be done.
+
+Code: Code is attached in the file "main.c". For exact details see comments, description box and
+	  revision box.
+
+Schematic: The schematic is only the LaunchPad. I used the  main button for a single, interesting feature
+	that is tied into the  main functionality. Therefore, there is no attached schematic.
+	
+Success/Errors: Through testing no errors have been found. It was more difficult to create the state machine
+	than it was to do this through arrays. The array took about an hour to implement vs about an hour and a 
+	half for the state machine. One possibility for even more "fun" is to attach another button and have three
+	songs, then assess the button presses in a binary fassion that select one of the three songs.
