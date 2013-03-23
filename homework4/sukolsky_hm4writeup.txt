@@ -27,7 +27,8 @@ Code: Code is attached in the file "main.c". For exact details see comments, des
 	  revision box.
 
 Schematic: The schematic is only the LaunchPad. I used the  main button for a single, interesting feature
-	that is tied into the  main functionality. Therefore, there is no attached schematic.
+	that is tied into the  main functionality. Therefore, there is no attached schematic.The only extra feature
+	is the speaker which has it's negative lead attached to GND and it's positive lead attached to P1.1 (TA0).
 	
 Success/Errors: Through testing no errors have been found. It was more difficult to create the state machine
 	than it was to do this through arrays. The array took about an hour to implement vs about an hour and a 

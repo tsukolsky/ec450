@@ -241,7 +241,7 @@ void interrupt WDT_interval_handler(){
 	//If playing the song, add the time between to the timeWaited
 	if (flagPlaySong){timeWaited+=.008;}		//If overflow and we are playing the song, add amount of time that has gone by.
 	//If waiting for a second press, add the time we've been waitin
-	else if (!flagPlaySong){
+	else if (flagWaitingForPress && !flagPlaySong){
 		timeSincePress+=.008;
 		//Set a timeout for the button press at 10 seconds
 		if (timeSincePress > 8.0){
@@ -252,7 +252,7 @@ void interrupt WDT_interval_handler(){
 			P1OUT &= ~RED_LED;
 		}
 	}
-	else;
+	else{timeWaited=0;timeSincePress=0;}
 }
 
 /*------------------------------------------*/

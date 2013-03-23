@@ -3,7 +3,7 @@
 | Author: Todd Sukolsky
 | ID: U50387016
 | Initial Build: 3/18/2013
-| Last Revised: 3/18/2013
+| Last Revised: 3/20/2013
 | Copyright of Todd Sukolsky
 |================================================================================
 | Description: This program is the main program for homework 4 of BU's ECE450.
@@ -19,6 +19,8 @@
 |					  should be G major but something is off, I think C# ending? Can't figure it out.
 |					  Added "Special Feature". User can press button longer or shorter to speed up
 |					  tones. Longer it's left wihtout second press, quicker it goes. Three stages.
+|			 3/20-Changed tones from a state machine to a simple two system while loop with pauses.
+|				  Added the main segments of the "Imperial March-Darth Vader Theme".Works well.
 |
 |================================================================================
 | *NOTES: Tone Frequencies: C=261.63, D=293.66, E=329.63, F=349.23, G=392.00, A=440
@@ -44,11 +46,12 @@
 #define E_high 		660
 #define Fsharp_high 740
 #define F_high 		698
-#define G 			392
-#define Gflat 		370
+#define G			392
+#define Gflat_low 	370
+#define Gsharp_low 	415
 #define G_high 		784
 #define Gflat_high 	740
-#define Gsharp_low 	415
+#define Gsharp_high	830
 #define A			440
 #define Bflat 		466
 #define B 			493
@@ -65,6 +68,7 @@
 #define STATE_4_TIME	.925
 #define PAUSE_TIME		.075
 
+#define whole		3.925
 #define quarter 	.925
 #define triple 		.925*.75
 #define eigth		.925*.5
@@ -86,10 +90,17 @@ unsigned int flagPlaySong=fFalse, flagWaitingForPress=fFalse;
 float timeWaited=0,timeSincePress=0;
 unsigned int speedDivisor=1;
 
-unsigned int toneArray[18]={G,G,G,Eflat_low,Bflat,G,Eflat_low,Bflat,G,D,D,D,Eflat_high,Bflat,Gflat,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
-		Gsharp_low,Csharp,C,B,Bflat,A,Bflat,Eflat_low,Gflat_low};
-float noteArray[18]={quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half};
-float pauseArray[18]={small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small};
+const unsigned int toneArray[66]={G,G,G,Eflat_low,Bflat,G,Eflat_low,Bflat,G,D,D,D,Eflat_high,Bflat,Gflat_low,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		/*1*/Gsharp_low,Csharp,C,B,Bflat,A,Bflat,/*2*/Eflat_low,Gflat_low, Eflat_low,Gflat_low,/*marker*/G,Eflat_low,Bflat,G,G_high,G,G,G_high,Fsharp_high,F_high,E_high,Dsharp_high,E_high,
+		/*3*/Gsharp_low,Csharp,C,B,Bflat,A,Bflat,/*4*/Eflat_low,Gflat_low,Eflat_low,Bflat,G,Eflat_low,Bflat,G};
+
+const float noteArray[66]={quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,quarter,quarter,quarter,triple,sixteenth,quarter,triple,sixteenth,half,/*start*/quarter,triple,sixteenth,
+		quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*1*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*2*/eigth,quarter,triple,sixteenth,/*marker*/quarter,triple,
+		sixteenth,half,quarter,triple,sixteenth,quarter,triple,sixteenth,sixteenth,sixteenth,eigth,/*3*/eigth,quarter,triple,sixteenth,sixteenth,sixteenth,
+		eigth,/*4*/eigth,quarter,triple,sixteenth,quarter,triple,sixteenth,whole};
+const float pauseArray[66]={small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,/*start*/small,small,small,small,small,small,small,small,
+		(small+eigth),small,small,small,small,small,small,(small+eigth),small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,(small+eigth),small,small,
+		small,small,small,small,(small+eigth),small,small,small,small,small,small,small,small};
 /*==============================================*/
 /*			Forward Function Declarations		*/
 /*==============================================*/
@@ -114,7 +125,8 @@ void main(void){
 	//Initialize timers, buttons, LEDs
 	initButtonAndLEDS();
 	initTimerA();
-
+	timeWaited=0;
+	timeSincePress=0;
 	//Enable global interrupts
 	_bis_SR_register(GIE);
 
@@ -156,7 +168,7 @@ void playSong2(){
 		timeWaited=0;													//reset timeWaited
 		TACCTL0 = CCIE;													//turn sound off for rest
 		while (timeWaited < pauseArray[whichNote]/speedDivisor);		//wait till rest is complete
-		if (whichNote >= 18){playingSong=fFalse;}						//if we are done playing, bring flag down which will exit loop/function
+		if (whichNote >= 65){playingSong=fFalse;}						//if we are done playing, bring flag down which will exit loop/function
 		else{whichNote+=1;}
 	}//end while
 
@@ -190,16 +202,21 @@ void interrupt buttonISR(){
 		if (!flagPlaySong){
 			//IF we were waiting for the second press, we now have it. Cut the cord and see how long it was, set speedDivisor based on that.
 			if (flagWaitingForPress){
+				unsigned int flagOKtoPlay=fTrue;
 				flagWaitingForPress=fFalse;
-				if (timeSincePress > .008*10 && timeSincePress < 1){speedDivisor=1;}		//small debounce
-				else if (timeSincePress >=1 && timeSincePress <=3){speedDivisor=3;}
-				else if (timeSincePress >3 && timeSincePress <=5){speedDivisor=5;}
-				else if (timeSincePress >5 && timeSincePress <=7){speedDivisor=7;}
-				else {speedDivisor=9;}
-				flagPlaySong=fTrue;
-				timeSincePress=0;
-				P1OUT &= ~RED_LED;
-				TACCTL0 = CCIE + OUTMOD_4;												//turn on the sound
+				if (timeSincePress > .35 && timeSincePress < 1){speedDivisor=1;}		//small debounce
+				else if (timeSincePress >=1 && timeSincePress <=3){speedDivisor=2;}
+				else if (timeSincePress >3 && timeSincePress <=5){speedDivisor=4;}
+				else if (timeSincePress >5 && timeSincePress <=7){speedDivisor=6;}
+				else if(timeSincePress >7 &&timeSincePress <8){speedDivisor=7;}
+				else {flagOKtoPlay=fFalse;}
+
+				//If okay to play, go forward and play everthing
+				if(flagOKtoPlay){
+					flagPlaySong=fTrue;
+					timeSincePress=0;
+					P1OUT &= ~RED_LED;
+				}else{flagWaitingForPress=fFalse;}
 			} else {
 				//We haven't gotten an initial press yet, set the flag high so the counter starts and bring RED_LED up
 				flagWaitingForPress=fTrue;
@@ -214,8 +231,8 @@ void interrupt buttonISR(){
 
 //Timer compare match. Just toggle LEDS.
 void interrupt timerAISR(){
-	if (flagPlaySong){P1OUT |= GREEN_LED;}			//Toggle for our own benefit
-	else{P1OUT &= ~GREEN_LED;}
+	if (flagPlaySong){P1OUT |= GREEN_LED; timeSincePress=0;}			//Toggle for our own benefit
+	else{P1OUT &= ~GREEN_LED; timeWaited=0;}
 }
 
 /*------------------------------------------*/
@@ -224,12 +241,12 @@ void interrupt WDT_interval_handler(){
 	//If playing the song, add the time between to the timeWaited
 	if (flagPlaySong){timeWaited+=.008;}		//If overflow and we are playing the song, add amount of time that has gone by.
 	//If waiting for a second press, add the time we've been waitin
-	else if (flagWaitingForPress){
+	else if (!flagPlaySong){
 		timeSincePress+=.008;
 		//Set a timeout for the button press at 10 seconds
-		if (timeSincePress > 10){
+		if (timeSincePress > 8.0){
 			timeSincePress = 0;
-			speedDivisor=10;
+			speedDivisor=8;
 			flagWaitingForPress=fFalse;
 			flagPlaySong=fTrue;
 			P1OUT &= ~RED_LED;
