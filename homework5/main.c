@@ -6,7 +6,8 @@
 |================================================================================
 | Description: This is the main program file for homework 5 of EC450, Microprocessors.
 |		The goal of this assignment is to make a "frequency multiplier" using the MSP430.
-|		See "homework5_writeup" for more information.
+|		See "homework5_writeup" for more information. The module works for frequencies between
+|		around 20 Hz to 12 kHz
 |--------------------------------------------------------------------------------
 | Revisions: 3/31-Initial Build. Made basic timeing mechanisms using timer 0
 |			 4/3- Completed module.
