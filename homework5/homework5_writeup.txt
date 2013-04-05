@@ -5,9 +5,6 @@ Equipment Setup: Connected on Pin 1.1 is the positive terminal of the scope. Thi
 Connected on Pin 1.2 is the positive end of the input clock which is coming from a waveform generator. Evertyhing else is inherent in the 
 launchpad schematic. 
 
-Code Elaboration: First off the code shuts down the watchdog and initializes two GPIO's and TIMER0. The GPIO's are used to capture interrupts
-with the timer, precisely the rising and/or falling edge of the clock, in order to find the time between. We do not need to worry about how many
-ms/microseconds it was since we are simply tripling the frequency. Once we found the rising and falling edge we set the period to that time whcih is then
-set as the output clock compare counter. Once this compare is hit, the pin is toggled and the period is updated.
+Code Elaboration: First off the code shuts down the watchdog and initializes two GPIO's and TIMER0. 
 
 See comments in code...

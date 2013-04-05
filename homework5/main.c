@@ -7,20 +7,19 @@
 | Description: This is the main program file for homework 5 of EC450, Microprocessors.
 |		The goal of this assignment is to make a "frequency multiplier" using the MSP430.
 |		See "homework5_writeup" for more information. The module works for frequencies between
-|		around 20 Hz to 12 kHz
+|		around 16 Hz to 40 kHz
 |--------------------------------------------------------------------------------
 | Revisions: 3/31-Initial Build. Made basic timeing mechanisms using timer 0
-|			 4/3- Completed module.
+|			 4/3- Thought I finished, didn't though. Something is wrong with IO declarations
+|			 4/5- Fixed issue with port declarations, works now.
 |================================================================================
 | *NOTES:
 \*******************************************************************************/
 
 #include "msp430g2553.h"
 
-#define INPUT_CLK	(1 << 2)		//Pin 1.2, TA0.1
-#define OUTPUT_CLK 	(1 << 1)		//PIN1.1, TA0.0
-#define IN_CLK BIT2
-#define OUT_CLK BIT1			
+#define INPUT_CLK	BIT2		//Pin 1.2, TA0.1
+#define OUTPUT_CLK 	BIT1		//PIN1.1, TA0.0
 
 /************************************/
 /*		Forward Declarations		*/
@@ -47,7 +46,7 @@ void main()
 	DCOCTL  = CALDCO_16MHZ;
 
 	//Initialize Timer0, then turn the CPU off.
-	initTimer0(); 
+	initTimer0();
 	initGPIO();
 	_bis_SR_register(GIE+LPM0_bits);	// Global interrupts enabled, CPU off
 }
@@ -56,7 +55,7 @@ void main()
 /*				Functions			*/
 /************************************/
 /*******************************************************************************/
-void initTimer0(){              
+void initTimer0(){
 	TA0CTL |= TACLR;              		//Clear whatever was in the Control register.
 	TA0CTL |= TASSEL_2+ID_3+MC_2;  		//clk/8, continusous using the SMCLK.
 
@@ -68,10 +67,10 @@ void initTimer0(){
 }
 /*******************************************************************************/
 void initGPIO(){
-	//Input clock is on TA0.1, pin1.2. Output clock is on TA0.0, pin 1.1 
-	P1SEL |= (1 << INPUT_CLK)|(1 << OUTPUT_CLK);
-	P1DIR &= ~(1 << INPUT_CLK);			//input
-	P1DIR |= (1 << OUTPUT_CLK);			//output
+	//Input clock is on TA0.1, pin1.2. Output clock is on TA0.0, pin 1.1
+	P1SEL |= INPUT_CLK+OUTPUT_CLK;
+	P1DIR &= ~INPUT_CLK;			//input
+	P1DIR |= OUTPUT_CLK;			//output
 }
 /*******************************************************************************/
 void interrupt outputClock()
@@ -82,14 +81,14 @@ void interrupt outputClock()
 void interrupt inputClock()
 {
 	static unsigned int risingEdge=0;
-	if (TA0IV & (1 << 1)){
+	if (TA0IV & 0x02){
 		if (TA0CCTL1 & CCI){	//we swaw the rising edge, record at what point that was
 			risingEdge=TA0CCR1;
 		} else {				//we say the falling edge, set the period.
-			period=TA0CCR1-rising_edge;
+			period=TA0CCR1-risingEdge;
 			TA0CCTL1 &= ~CCIFG;	//kill the flag
 		}
-	} else if (TA0IV & ((1 << 4)|(1 << 1))){	//overflow vector, add to global overflows. compare to 10(base10).
+	} else if (TA0IV & 0x0A){	//overflow vector, add to global overflows. compare to 10(base10).
 		overflows++;
 	} else;
 }
