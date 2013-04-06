@@ -5,6 +5,13 @@ Equipment Setup: Connected on Pin 1.1 is the positive terminal of the scope. Thi
 Connected on Pin 1.2 is the positive end of the input clock which is coming from a waveform generator. Evertyhing else is inherent in the 
 launchpad schematic. 
 
-Code Elaboration: First off the code shuts down the watchdog and initializes two GPIO's and TIMER0. 
+Code Elaboration: First off the code shuts down the watchdog and initializes two GPIO's and TIMERA. The output clock is set high and low
+by a toggling inerrupt of Timer Compare Control 0, to TA0. Every time a compare match is hit, this pin will toggle. The function driving what
+that compare toggle is is the input capture of pin 1.2, TA0.1. This pin is alerted when a rising edge or falling edge occurs and measure the time,
+which is the half period, in between them and sets the global "period" to that value. Once the compare 0 interrupt is hit, the compare register
+will be advanced forward to 1/3 of the measured period, which will relate to a tripling of the frequency.
+
+The upper and lower bounds of the module is ~{17Hz,12kHz}. Below 17Hz there is an overflow in the compare counter, so the "period" will be skewed
+and innacurate. The 12kHz represents the minimum time between counter clicks/recognition of the rising and falling edges of the input clock. 
 
 See comments in code...

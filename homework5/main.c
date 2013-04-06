@@ -57,12 +57,12 @@ void main()
 /*******************************************************************************/
 void initTimer0(){
 	TA0CTL |= TACLR;              		//Clear whatever was in the Control register.
-	TA0CTL |= TASSEL_2+ID_3+MC_2;  		//clk/8, continusous using the SMCLK.
+	TA0CTL |= TASSEL_2+ID_3+MC_2;  		//clk/8, continusous using the SMCLK. 
 
 	TA0CCTL1 |=CM_3+CAP+CCIE; 			//Enable compare interrupt, capture on the rising AND falling edge of the clock
-	TA0CCTL0 |=OUTMOD_4+CCIE;
+	TA0CCTL0 |=OUTMOD_4+CCIE;			//Enable interrupt that toggles pin TA0.0
 	
-	TA0CCR0=300;						//Initialize the half period to 300
+	TA0CCR0=300;						//Initialize the half period to 300, .15ms
 	TA0CTL |= TAIE;						//Enable the interrupt last so we don't get taken out of the init by accident
 }
 /*******************************************************************************/
@@ -74,12 +74,14 @@ void initGPIO(){
 }
 /*******************************************************************************/
 void interrupt outputClock()
-{	//Adjust the frequency
+{	//Adjust the frequency. Currently the value in TA0CCR0 is period/3 behind where we are now, so advance it forward so the next interrupt is the correc
+	//interval.
 	TA0CCR0 += period/3;
 }
 /*******************************************************************************/
 void interrupt inputClock()
 {
+	//Find out how long a half period is.
 	static unsigned int risingEdge=0;
 	if (TA0IV & 0x02){
 		if (TA0CCTL1 & CCI){	//we swaw the rising edge, record at what point that was
