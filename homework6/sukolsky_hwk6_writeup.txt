@@ -1,0 +1,17 @@
+Todd Sukolsky, U50387016
+
+Setup: THe launchpad was connected via USB to a computer, and a Serial TTL232 cable
+was connected to VCC, GND, and the uC UART_TXD. PuTTY is used to stream serial data
+to the comm port the TTL232 cable is connected too.
+
+Implementation: The msp uses thew atchdog timer to trigger an interrupt ever 1MHz/32, and then every 60 times
+that is called the handler will start an ADC reading of the onboard temperature
+sensor. The ADC is set to run off the SMCLK with a clock divide of 4 and take
+one measurement. The handler waits for the conversion to be done, then reads 
+the two byte ADC10MEM register. Then, the number (between 0 and 1023) is converted
+into a float that represents the temperature in celcius. To print the float a decimal
+value is taken of the float, then the remaining <1 numbers are converted to a decimal
+and printed after the >1 decimal value. (See comments in the code). Finally the handler
+loads up the UART transmit buffer and waits for the transmit to complete (looks at the
+transmit flag). It loops through the output string until a NULL is found, which is 
+when it exits.
