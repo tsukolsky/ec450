@@ -1,0 +1,13 @@
+Michael Gurr and Todd Sukolsky:
+
+Our idea is a weather system that integrates humidity and temperature.
+The microcontroller will take ADC readings for humidity and temperature, 
+as well as communicate over SPI to a chip temperature sensor. The 
+MSP will then be connected to a Rasberry Pi via UART. The RasPi will run a python
+server and upon request the server will ask the MSP for the temperatures and humidity,
+receive the data, then send it back to the sender.
+
+Parts used: Thermistor (N channel)
+			TI LM95071 temp sensor (SPI)
+			Humidity sensor- possibly HoneyWell tech.
+			Rasberry Pi and/or TI's BeagleBone
